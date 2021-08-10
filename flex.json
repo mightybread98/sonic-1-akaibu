@@ -1,0 +1,97 @@
+{
+    "Flex": 2,
+    "name": "",
+    "node": "d9d862aa-a306-427a-8979-9440689baf09",
+    "objects": [
+        {
+            "uuid": "d9d862aa-a306-427a-8979-9440689baf09",
+            "format": "Sonic 1.js",
+            "name": "objeqqqqqqqqqct",
+            "palettes": [],
+            "art": {
+                "path": "artunc\\sonic.bin",
+                "compression": "Uncompressed",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "_maps\\Sonic.asm",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": true,
+                "path": "_inc\\Sonic dynamic pattern load cues.asm",
+                "label": ""
+            }
+        },
+        {
+            "uuid": "dbd06bf8-44df-48e1-8174-72f733dd0080",
+            "format": "Sonic 1.js",
+            "name": "zone ttl card",
+            "palettes": [
+                {
+                    "path": "pallet\\sonic.bin",
+                    "length": 1
+                }
+            ],
+            "art": {
+                "path": "artnem\\ttlcards.bin",
+                "compression": "Nemesis",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "_maps\\zonetitlecards.asm",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "label": ""
+            }
+        },
+        {
+            "uuid": "b08314f0-e94e-473b-91e6-d19d377a91dd",
+            "format": "Sonic 1.js",
+            "name": "lavah",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\mzlava.bin",
+                "compression": "Nemesis",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "label": ""
+            }
+        },
+        {
+            "uuid": "164b67a0-d828-4c27-ae21-4276d7091ff1",
+            "format": "Sonic 1.js",
+            "name": "ufo",
+            "palettes": [
+                {
+                    "path": "",
+                    "length": 3
+                }
+            ],
+            "art": {
+                "path": "artunc\\mzufos.bin",
+                "compression": "Uncompressed",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "label": ""
+            }
+        }
+    ]
+}
