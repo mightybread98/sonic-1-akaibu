@@ -3664,8 +3664,7 @@ LevelMenuText:	incbin	misc\menutext.bin
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
-MusicList:	incbin	misc\muslist1.bin
-		even
+MusicList:	dc.b	$81, $84, $87, $8A, $8D, $90, $93, 0
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -3793,13 +3792,26 @@ Level_GetBgm:
 Level_BgmNotLZ4:
 		cmpi.w	#$502,($FFFFFE10).w ; is level FZ?
 		bne.s	Level_PlayBgm	; if not, branch
-		moveq	#6,d0		; move 6 to d0
+		move.w  #$93,d0
+		bra.s   Level_PlayBgm3
 
 Level_PlayBgm:
 		lea	(MusicList).l,a1 ; load	music playlist
-		move.b	(a1,d0.w),d0	; add d0 to a1
-		bsr.w	PlaySound	; play music
+		move.b	(a1,d0.w),d0
+		move.b  ($FFFFFE11).w,d1
+		cmpi.b  #3,d1		; is this act 4?
+		bne.s   Level_PlayBgm2	; if not, branch
+	        subi.b  #1,d1
+                	
+Level_PlayBgm2:
+                add.b	d1,d0
+		
+Level_PlayBgm3:                
+                bsr.w	PlaySound	 ; play music
 		move.b	#$34,($FFFFD080).w ; load title	card object
+ 
+; NineKode ends here
+
 
 Level_TtlCard:
 		move.b	#$C,($FFFFF62A).w
@@ -24103,9 +24115,9 @@ Obj01_ChkInvin:
 		tst.w	$32(a0)		; check	time remaining for invinciblity
 		beq.s	Obj01_ChkShoes	; if no	time remains, branch
 		subq.w	#1,$32(a0)	; subtract 1 from time
-		bne.s	Obj01_ChkShoes
+		bne.s	Obj01_ChkShoes	; if time remains, branch
 		tst.b	($FFFFF7AA).w
-		bne.s	Obj01_RmvInvin
+		bne.s	Obj01_RmvInvin2
 		cmpi.w	#$C,($FFFFFE14).w
 		bcs.s	Obj01_RmvInvin
 		moveq	#0,d0
@@ -24115,13 +24127,20 @@ Obj01_ChkInvin:
 		moveq	#5,d0		; play SBZ music
 
 Obj01_PlayMusic:
-		lea	(MusicList2).l,a1
+		lea	(MusicList).l,a1 ; load	music playlist
 		move.b	(a1,d0.w),d0
-		jsr	(PlaySound).l	; play normal music
-
+		move.b  ($FFFFFE11).w,d1
+                cmpi.b	#3,d1		; is this act 4?
+                bne.s   @Play		; if not, branch
+                subi.b	#1,d1
+	@Play:	add.b	d1,d0		; add act number to the current song
+		jsr	(PlaySound).l	; play music
 Obj01_RmvInvin:
 		move.b	#0,($FFFFFE2D).w ; cancel invincibility
+; NineKode ends here.
 
+Obj01_RmvInvin2:
+		move.b	#0,($FFFFFE2D).w ; cancel invincibility
 Obj01_ChkShoes:
 		tst.b	($FFFFFE2E).w	; does Sonic have speed	shoes?
 		beq.s	Obj01_ExitChk	; if not, branch
@@ -26083,13 +26102,17 @@ locret_1408C:
 ResumeMusic:				; XREF: Obj64_Wobble; Sonic_Water; Obj0A_ReduceAir
 		cmpi.w	#$C,($FFFFFE14).w
 		bhi.s	loc_140AC
-		move.w	#$82,d0		; play LZ music
-		cmpi.w	#$103,($FFFFFE10).w ; check if level is	0103 (SBZ3)
-		bne.s	loc_140A6
-		move.w	#$86,d0		; play SBZ music
 
-loc_140A6:
-		jsr	(PlaySound).l
+; Vladikcomper: Music play code changed
+                moveq   #0,d0
+                moveq   #0,d1
+                move.b  #$92,d0          ; SBZ music
+                cmpi.b  #3,($FFFFFE11).w ; is this act 4?
+                beq.s	@ExecuteMusic	 ; if yes, branch
+                subi.b	#$E,d0		 ; set music to LZ
+                move.b  ($FFFFFE11).w,d1
+                add.b	d1,d0		 ; add act number
+@ExecuteMusic:	jsr	(PlaySound).l	 ; play music
 
 loc_140AC:
 		move.w	#$1E,($FFFFFE14).w
