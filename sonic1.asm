@@ -3202,7 +3202,7 @@ Title_LoadText:
 		bsr.w	NemDec
 		moveq	#1,d0		; load title screen pallet
 		bsr.w	PalLoad1
-		move.b	#$8A,d0		; play title screen music
+		move.b	#$9B,d0		; play title screen music
 		bsr.w	PlaySound_Special
 		move.b	#0,($FFFFFFFA).w ; disable debug mode
 		move.w	#$178,($FFFFF614).w ; run title	screen for $178	frames
@@ -3355,7 +3355,7 @@ LevelSelect:
 		beq.s	LevSel_Credits	; if yes, branch
 
 LevSel_NoCheat:
-		cmpi.w	#$94,d0		; is sound $80-$94 being played?
+                cmpi.w    #$A0,d0    ; is sound $80-$9F being played?
 		bcs.s	LevSel_PlaySnd	; if yes, branch
 		cmpi.w	#$A0,d0		; is sound $95-$A0 being played?
 		bcs.s	LevelSelect	; if yes, branch
@@ -38891,7 +38891,13 @@ MusicIndex:	dc.l Music81, Music82
 		dc.l Music8D, Music8E
 		dc.l Music8F, Music90
 		dc.l Music91, Music92
-		dc.l Music93
+		dc.l Music93, Music94
+		dc.l Music95, Music96
+		dc.l Music97, Music98
+		dc.l Music99, Music9A
+		dc.l Music9B, Music9C
+		dc.l Music9D, Music9E
+                dc.l Music9F
 ; ---------------------------------------------------------------------------
 ; Type of sound	being played ($90 = music; $70 = normal	sound effect)
 ; ---------------------------------------------------------------------------
@@ -41182,6 +41188,31 @@ Music92:	incbin	sound\music92.bin
 		even
 Music93:	incbin	sound\music93.bin
 		even
+; Vladikcomper:	Here goes extra music slots to fit 3 different songs per zone
+Music94:	incbin	sound\music94.bin
+		even
+Music95:	incbin	sound\music95.bin
+		even	
+Music96:	incbin	sound\music96.bin
+		even
+Music97:	incbin	sound\music97.bin
+		even	
+Music98:	incbin	sound\music98.bin
+		even	
+Music99:	incbin	sound\music99.bin
+		even	
+Music9A:	incbin	sound\music9A.bin
+		even	
+Music9B:	incbin	sound\music9B.bin
+		even	
+Music9C:	incbin	sound\music9C.bin
+		even	
+Music9D:	incbin	sound\music9D.bin
+		even	
+Music9E:	incbin	sound\music9E.bin
+		even		
+Music9F:	incbin	sound\music9F.bin
+		even		
 ; ---------------------------------------------------------------------------
 ; Sound	effect pointers
 ; ---------------------------------------------------------------------------
