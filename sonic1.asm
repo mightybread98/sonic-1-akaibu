@@ -2064,55 +2064,7 @@ locret_1990:
 PalCycle_LZ:				; XREF: PalCycle
 		;lea	(Pal_LZCyc1).l,a0
 		cmpi.b	#3,($FFFFFE11).w ; check if level is SBZ3
-		bne.s	loc_19C0
 		lea	(Pal_SBZ3Cyc1).l,a0 ; load SBZ3	pallet instead
-
-loc_19C0:
-		lea	($FFFFFB56).w,a1
-		move.l	(a0,d0.w),(a1)+
-		move.l	4(a0,d0.w),(a1)
-		lea	($FFFFFAD6).w,a1
-		move.l	(a0,d0.w),(a1)+
-		move.l	4(a0,d0.w),(a1)
-
-loc_19D8:
-		move.w	($FFFFFE04).w,d0
-		andi.w	#7,d0
-		move.b	byte_1A3C(pc,d0.w),d0
-		beq.s	locret_1A3A
-		moveq	#1,d1
-		tst.b	($FFFFF7C0).w
-		beq.s	loc_19F0
-		neg.w	d1
-
-loc_19F0:
-		move.w	($FFFFF650).w,d0
-		andi.w	#3,d0
-		add.w	d1,d0
-		cmpi.w	#3,d0
-		bcs.s	loc_1A0A
-		move.w	d0,d1
-		moveq	#0,d0
-		tst.w	d1
-		bpl.s	loc_1A0A
-		moveq	#2,d0
-
-loc_1A0A:
-		move.w	d0,($FFFFF650).w
-		add.w	d0,d0
-		move.w	d0,d1
-		add.w	d0,d0
-		add.w	d1,d0
-		lea	(Pal_LZCyc2).l,a0
-		lea	($FFFFFB76).w,a1
-		move.l	(a0,d0.w),(a1)+
-		move.w	4(a0,d0.w),(a1)
-		lea	(Pal_LZCyc3).l,a0
-		lea	($FFFFFAF6).w,a1
-		move.l	(a0,d0.w),(a1)+
-		move.w	4(a0,d0.w),(a1)
-
-locret_1A3A:
 		rts	
 ; End of function PalCycle_LZ
 
