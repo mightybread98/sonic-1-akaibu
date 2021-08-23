@@ -1,20 +1,41 @@
 {
     "Flex": 2,
     "name": "",
-    "node": "c43092ed-d41f-4b82-b152-71869991cfe9",
+    "node": "edd41f7b-8271-4271-8699-91cfe9fabb64",
     "objects": [
         {
-            "uuid": "c43092ed-d41f-4b82-b152-71869991cfe9",
+            "uuid": "edd41f7b-8271-4271-8699-91cfe9fabb64",
             "format": "Sonic 1.js",
-            "name": "ttl",
+            "name": "aaaaaaa",
             "palettes": [
                 {
                     "path": "pallet\\levelsel.bin",
                     "length": 1
-                },
+                }
+            ],
+            "art": {
+                "path": "",
+                "compression": "Uncompressed",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "label": ""
+            }
+        },
+        {
+            "uuid": "92edd41f-7b82-4152-b186-9991cfe9fabb",
+            "format": "Sonic 1.js",
+            "name": "objhgvrfect",
+            "palettes": [
                 {
-                    "path": "pallet\\LevelSelectMenu.bin",
-                    "length": 2
+                    "path": "pallet\\ghz.bin",
+                    "length": 3
                 }
             ],
             "art": {
