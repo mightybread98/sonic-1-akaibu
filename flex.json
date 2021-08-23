@@ -7,7 +7,12 @@
             "uuid": "d9d862aa-a306-427a-8979-9440689baf09",
             "format": "Sonic 1.js",
             "name": "objeqqqqqqqqqct",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "pallet\\sonic.bin",
+                    "length": 1
+                }
+            ],
             "art": {
                 "path": "artunc\\sonic.bin",
                 "compression": "Uncompressed",

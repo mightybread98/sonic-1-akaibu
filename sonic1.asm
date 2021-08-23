@@ -24413,6 +24413,8 @@ loc_13024:
 		beq.s	loc_13066
 		cmpi.b	#$80,d0
 		beq.s	loc_13060
+		cmpi.w	#$600,$10(a0)
+		bge.s	Sonic_WallRecoil
 		add.w	d1,$10(a0)
 		bset	#5,$22(a0)
 		move.w	#0,$14(a0)
@@ -24425,6 +24427,8 @@ loc_13060:
 ; ===========================================================================
 
 loc_13066:
+		cmpi.w	#-$600,$10(a0)
+		ble.s	Sonic_WallRecoil
 		sub.w	d1,$10(a0)
 		bset	#5,$22(a0)
 		move.w	#0,$14(a0)
@@ -24436,6 +24440,30 @@ loc_13078:
 
 locret_1307C:
 		rts	
+; ===========================================================================
+
+Sonic_WallRecoil:			; CODE XREF: Sonic_Move+180j
+					; Sonic_Move+1A0j
+		move.b	#4,$24(a0)
+		bsr.w	Sonic_ResetOnFloor
+		bset	#1,$22(a0)
+		move.w	#$FE00,d0
+		tst.w	$10(a0)
+		bpl.s	Sonic_WallRecoil_Right
+		neg.w	d0
+
+Sonic_WallRecoil_Right:			; CODE XREF: Sonic_Move+1D2j
+		move.w	d0,$10(a0)
+		move.w	#$FC00,$12(a0)
+		move.w	#0,$14(a0)
+		move.b	#$A,$1C(a0)
+		move.b	#1,$25(a0)
+		move.w	#$A3,d0	; '£'
+		jsr	(PlaySound_Special).l
+		rts
+; End of function Sonic_Move
+
+
 ; End of function Sonic_Move
 
 
