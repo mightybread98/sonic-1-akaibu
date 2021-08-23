@@ -2789,7 +2789,7 @@ Pal_SegaBG:     dc.w 0, $EEE, $EC0, $EA0, $E80, $E60, $E40, $E20, $E00
                 dc.w 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 dc.w 0, 0, 0, 0, 0, 0, 0, 0 
 Pal_Title:	incbin	pallet\title.bin
-Pal_LevelSel:	incbin	pallet\levelsel.bin
+Pal_LevelSel:	incbin	pallet\LevelSel.bin
 Pal_Sonic:	incbin	pallet\sonic.bin
 Pal_GHZ:	incbin	pallet\ghz.bin
 Pal_GHZ2:	incbin	pallet\ghz2.bin
