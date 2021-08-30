@@ -4890,7 +4890,7 @@ loc_47D4:
 		move.w	($FFFFFE20).w,d0
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,($FFFFF7D4).w ; set rings bonus
-		move.w	#$8E,d0
+		move.w	#$99,d0
 		jsr	(PlaySound_Special).l ;	play end-of-level music
 		lea	($FFFFD000).w,a1
 		moveq	#0,d0
@@ -41143,7 +41143,7 @@ Music88:	incbin	sound\music88.bin
 		even
 Music89:	incbin	sound\music89.bin
 		even
-Music8A:	incbin	sound\music8A.bin
+Music8A:	incbin	sound\slz1.bin
 		even
 Music8B:	incbin	sound\music8B.bin
 		even
