@@ -598,16 +598,7 @@ loc_CD4:				; XREF: loc_C76
 		move.w	#$7800,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		tst.b	($FFFFF767).w
-		beq.s	loc_D50
-		lea	($C00004).l,a5
-		move.l	#$94019370,(a5)
-		move.l	#$96E49500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7000,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		move.b	#0,($FFFFF767).w
+		jsr	(ProcessDMAQueue).l
 
 loc_D50:
 		move.w	#0,($A11100).l
@@ -673,16 +664,7 @@ loc_DAE:
 		move.w	($FFFFF640).w,(a5)
 		move.w	#0,($A11100).l
 		bsr.w	PalCycle_SS
-		tst.b	($FFFFF767).w
-		beq.s	loc_E64
-		lea	($C00004).l,a5
-		move.l	#$94019370,(a5)
-		move.l	#$96E49500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7000,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		move.b	#0,($FFFFF767).w
+		jsr	(ProcessDMAQueue).l
 
 loc_E64:
 		tst.w	($FFFFF614).w
@@ -805,16 +787,7 @@ loc_FAE:
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
 		move.w	#0,($A11100).l	; start	the Z80
-		tst.b	($FFFFF767).w
-		beq.s	loc_1060
-		lea	($C00004).l,a5
-		move.l	#$94019370,(a5)
-		move.l	#$96E49500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7000,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		move.b	#0,($FFFFF767).w
+		jsr	(ProcessDMAQueue).l
 
 loc_1060:
 		tst.w	($FFFFF614).w
@@ -1251,6 +1224,101 @@ loc_1432:
 		rts	
 ; End of function ShowVDPGraphics
 
+; ---------------------------------------------------------------------------
+; Subroutine for queueing VDP commands (seems to only queue transfers to VRAM),
+; to be issued the next time ProcessDMAQueue is called.
+; Can be called a maximum of 18 times before the buffer needs to be cleared
+; by issuing the commands (this subroutine DOES check for overflow)
+; ---------------------------------------------------------------------------
+; In case you wish to use this queue system outside of the spin dash, this is the
+; registers in which it expects data in:
+; d1.l: Address to data (In 68k address space)
+; d2.w: Destination in VRAM
+; d3.w: Length of data
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+; sub_144E: DMA_68KtoVRAM: QueueCopyToVRAM: QueueVDPCommand: Add_To_DMA_Queue:
+QueueDMATransfer:
+		movea.l	($FFFFC8FC).w,a1
+		cmpa.w	#$C8FC,a1
+		beq.s	QueueDMATransfer_Done ; return if there's no more room in the buffer
+
+		; piece together some VDP commands and store them for later...
+		move.w	#$9300,d0 ; command to specify DMA transfer length & $00FF
+		move.b	d3,d0
+		move.w	d0,(a1)+ ; store command
+
+		move.w	#$9400,d0 ; command to specify DMA transfer length & $FF00
+		lsr.w	#8,d3
+		move.b	d3,d0
+		move.w	d0,(a1)+ ; store command
+
+		move.w	#$9500,d0 ; command to specify source address & $0001FE
+		lsr.l	#1,d1
+		move.b	d1,d0
+		move.w	d0,(a1)+ ; store command
+
+		move.w	#$9600,d0 ; command to specify source address & $01FE00
+		lsr.l	#8,d1
+		move.b	d1,d0
+		move.w	d0,(a1)+ ; store command
+
+		move.w	#$9700,d0 ; command to specify source address & $FE0000
+		lsr.l	#8,d1
+		move.b	d1,d0
+		move.w	d0,(a1)+ ; store command
+
+		andi.l	#$FFFF,d2 ; command to specify destination address and begin DMA
+		lsl.l	#2,d2
+		lsr.w	#2,d2
+		swap	d2
+		ori.l	#$40000080,d2 ; set bits to specify VRAM transfer
+		move.l	d2,(a1)+ ; store command
+
+		move.l	a1,($FFFFC8FC).w ; set the next free slot address
+		cmpa.w	#$C8FC,a1
+		beq.s	QueueDMATransfer_Done ; return if there's no more room in the buffer
+		move.w	#0,(a1) ; put a stop token at the end of the used part of the buffer
+; return_14AA:
+QueueDMATransfer_Done:
+		rts
+; End of function QueueDMATransfer
+
+
+; ---------------------------------------------------------------------------
+; Subroutine for issuing all VDP commands that were queued
+; (by earlier calls to QueueDMATransfer)
+; Resets the queue when it's done
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+; sub_14AC: CopyToVRAM: IssueVDPCommands: Process_DMA: Process_DMA_Queue:
+ProcessDMAQueue:
+		lea	($C00004).l,a5
+		lea	($FFFFC800).w,a1
+; loc_14B6:
+ProcessDMAQueue_Loop:
+		move.w	(a1)+,d0
+		beq.s	ProcessDMAQueue_Done ; branch if we reached a stop token
+		; issue a set of VDP commands...
+		move.w	d0,(a5)		; transfer length
+		move.w	(a1)+,(a5)	; transfer length
+		move.w	(a1)+,(a5)	; source address
+		move.w	(a1)+,(a5)	; source address
+		move.w	(a1)+,(a5)	; source address
+		move.w	(a1)+,(a5)	; destination
+		move.w	(a1)+,(a5)	; destination
+		cmpa.w	#$C8FC,a1
+		bne.s	ProcessDMAQueue_Loop ; loop if we haven't reached the end of the buffer
+; loc_14CE:
+ProcessDMAQueue_Done:
+		move.w	#0,($FFFFC800).w
+		move.l	#$FFFFC800,($FFFFC8FC).w
+		rts
+; End of function ProcessDMAQueue
 ; ---------------------------------------------------------------------------
 ; Nemesis decompression	algorithm
 ; ---------------------------------------------------------------------------
@@ -3704,6 +3772,8 @@ Level_ClrVars3:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,($FFFFF624).w
 		move.w	($FFFFF624).w,(a6)
+		clr.w	($FFFFC800).w
+		move.l	#$FFFFC800,($FFFFC8FC).w
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 		move.w	#$8014,(a6)
@@ -4878,6 +4948,8 @@ loc_47D4:
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
 		jsr	Hud_Base
+		clr.w	($FFFFC800).w
+		move.l	#$FFFFC800,($FFFFC8FC).w
 		move	#$2300,sr
 		moveq	#$11,d0
 		bsr.w	PalLoad2	; load results screen pallet
@@ -25747,31 +25819,30 @@ LoadSonicDynPLC:			; XREF: Obj01_Control; et al
 		lea	(SonicDynPLC).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
-		moveq	#0,d1
-		move.b	(a2)+,d1	; read "number of entries" value
-		subq.b	#1,d1
+		moveq	#0,d5
+		move.b	(a2)+,d5
+		subq.w	#1,d5
 		bmi.s	locret_13C96
-		lea	($FFFFC800).w,a3
-		move.b	#1,($FFFFF767).w
+		move.w	#$F000,d4
+		move.l	#Art_Sonic,d6
 
 SPLC_ReadEntry:
-		moveq	#0,d2
-		move.b	(a2)+,d2
-		move.w	d2,d0
-		lsr.b	#4,d0
-		lsl.w	#8,d2
-		move.b	(a2)+,d2
-		lsl.w	#5,d2
-		lea	(Art_Sonic).l,a1
-		adda.l	d2,a1
-
-SPLC_LoadTile:
-		movem.l	(a1)+,d2-d6/a4-a6
-		movem.l	d2-d6/a4-a6,(a3)
-		lea	$20(a3),a3	; next tile
-		dbf	d0,SPLC_LoadTile ; repeat for number of	tiles
-
-		dbf	d1,SPLC_ReadEntry ; repeat for number of entries
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		lsl.w	#8,d1
+		move.b	(a2)+,d1
+		move.w	d1,d3
+		lsr.w	#8,d3
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	d6,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr	(QueueDMATransfer).l
+		dbf	d5,SPLC_ReadEntry	; repeat for number of entries
 
 locret_13C96:
 		rts	
