@@ -1,8 +1,28 @@
 {
     "Flex": 2,
     "name": "",
-    "node": "d9d862aa-a306-427a-8979-9440689baf09",
+    "node": "ea70529d-fad0-4bf4-9283-a00dfbe30ff6",
     "objects": [
+        {
+            "uuid": "ea70529d-fad0-4bf4-9283-a00dfbe30ff6",
+            "format": "Sonic 1.js",
+            "name": "eggspenis",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\bossmain.bin",
+                "compression": "Nemesis",
+                "offset": 0
+            },
+            "mappings": {
+                "path": "_maps\\Eggman.asm",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "label": ""
+            }
+        },
         {
             "uuid": "edd41f7b-8271-4271-8699-91cfe9fabb64",
             "format": "Sonic 1.js",
