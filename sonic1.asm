@@ -13175,7 +13175,7 @@ Obj2E_ChkInvinc:
 		cmpi.b	#5,d0		; does monitor contain invincibility?
 		bne.s	Obj2E_ChkRings
 		move.b	#1,($FFFFFE2D).w ; make	Sonic invincible
-		move.w	#$4B0,($FFFFD032).w ; time limit for the power-up
+		move.w	#$390,($FFFFD032).w ; time limit for the power-up
 		move.b	#$38,($FFFFD200).w ; load stars	object ($3801)
 		move.b	#1,($FFFFD21C).w
 		move.b	#$38,($FFFFD240).w ; load stars	object ($3802)
@@ -13186,7 +13186,7 @@ Obj2E_ChkInvinc:
 		move.b	#4,($FFFFD2DC).w
 		tst.b	($FFFFF7AA).w	; is boss mode on?
 		bne.s	Obj2E_NoMusic	; if yes, branch
-		move.w	#$87,d0
+		move.w	#$98,d0
 		jmp	(PlaySound).l	; play invincibility music
 ; ===========================================================================
 
