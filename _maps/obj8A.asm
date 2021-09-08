@@ -204,35 +204,35 @@ byte_17680:	dc.b 8			 ; TRY AGAIN
 		dc.b $30, 5, 0,	4, $18
 		dc.b $30, 1, 0,	$46, $28
 		dc.b $30, 5, 0,	$1A, $30
-byte_176A9:	dc.b $18	;  SONIC TEAM PRESENTS | BY  STDH AND IDEA BY LOLJR399
+byte_176A9:	dc.b $18	;  SONIC TEAM PRESENTS | BY SDTH AND REQUEST BY LOLJR 
 		dc.b $90, 5, 0, $48, $90	; B
 		dc.b $90, 5, 0, $2A, $A0	; Y
 
+		dc.b $B8, 5, 0, $2E, $C0	; S
+		dc.b $B8, 5, 0, $42, $D0	; D
+		dc.b $B8, 5, 0, $3E, $E0	; T
+		dc.b $B8, 5, 0, $3A, $F0	; H
 
-
-		dc.b $D8, 5, 0, $2E, $C0	; S
-		dc.b $D8, 5, 0, $3E, $D0	; T
+		dc.b $D8, 5, 0, 4, $C0		; A
+		dc.b $D8, 5, 0, $1A, $D0	; N
 		dc.b $D8, 5, 0, $42, $E0	; D
-		dc.b $D8, 5, 0, $3A, $F0	; H
 
-		dc.b $F8, 5, 0, 4, $C0		; A
-		dc.b $F8, 5, 0, $1A, $D0	; N
-		dc.b $F8, 5, 0, $42, $E0	; D
+		dc.b $F8, 5, 0, $22, $C0	; R
+		dc.b $F8, 5, 0, $0E, $D0	; E
 
-		dc.b $18, 1, 0, $46, $C0	; I
-		dc.b $18, 5, 0, $42, $C8	; D
-		dc.b $18, 5, 0, $0E, $D8	; E
-		dc.b $18, 5, 0, 4, $E8		; A
-		dc.b $18, 0, 0, $60, $C    ;Space
-		dc.b $18, 5, 0, $48, $8	; B
-		dc.b $18, 5, 0, $2A, $18	; Y
+		dc.b $F8, 5, 0, $32, $F0	; U
+		dc.b $F8, 5, 0, $0E, $0	; E
+		dc.b $F8, 5, 0, $2E, $10	; S
+		dc.b $F8, 5, 0, $3E, $20	; T
+		dc.b $F8, 0, 0, $60, $C    ;Space
+		dc.b $F8, 5, 0, $48, $40	; B
+		dc.b $F8, 5, 0, $2A, $50	; Y
 
-		dc.b $38, 5, 0, $16, $C0	; L
-		dc.b $38, 5, 0, $26, $D0	; O
-		dc.b $38, 5, 0, $16, $E0	; L
-		dc.b $38, 5, 0, $4C, $F0	; J
-		dc.b $38, 5, 0, $22, $0	; R
-; ERROR: UNKOWN SIGN
-; ERROR: UNKOWN SIGN
-; ERROR: UNKOWN SIGN
+		dc.b $18, 5, 0, $16, $C0	; L
+		dc.b $18, 5, 0, $26, $D0	; O
+		dc.b $18, 5, 0, $16, $E0	; L
+		dc.b $18, 5, 0, $4C, $F0	; J
+		dc.b $18, 5, 0, $22, $0	; R
+
+
 		even

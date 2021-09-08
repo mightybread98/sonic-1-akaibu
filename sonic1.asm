@@ -1103,7 +1103,17 @@ SoundDriverLoad:			; XREF: GameClrRAM; TitleScreen
         move.w    d1,($A11100).l
         rts
 ; End of function SoundDriverLoad
-
+; ---------------------------------------------------------------------------
+; Subroutine to    play a DAC sample
+; ---------------------------------------------------------------------------
+ 
+PlaySample:
+    move.w    #$100,($A11100).l    ; stop the Z80
+@0    btst    #0,($A11100).l
+    bne.s    @0
+    move.b    d0,$A01FFF
+    move.w    #0,($A11100).l
+    rts
 ; ---------------------------------------------------------------------------
 ; Subroutine to	play a sound or	music track
 ; ---------------------------------------------------------------------------
@@ -3277,36 +3287,16 @@ Title_ChkRegion:
 		tst.b	($FFFFFFF8).w	; check	if the machine is US or	Japanese
 		bpl.s	Title_RegionJ	; if Japanese, branch
 		lea	(LevelSelectCode_US).l,a0 ; load US code
-		bra.s	Title_EnterCheat
 ; ===========================================================================
 
 Title_RegionJ:				; XREF: Title_ChkRegion
 		lea	(LevelSelectCode_J).l,a0 ; load	J code
 
 Title_EnterCheat:			; XREF: Title_ChkRegion
-		move.w	($FFFFFFE4).w,d0
-		adda.w	d0,a0
-		move.b	($FFFFF605).w,d0 ; get button press
-		andi.b	#$F,d0		; read only up/down/left/right buttons
-		cmp.b	(a0),d0		; does button press match the cheat code?
-		bne.s	loc_3210	; if not, branch
-		addq.w	#1,($FFFFFFE4).w ; next	button press
-		tst.b	d0
-		bne.s	Title_CountC
-		lea	($FFFFFFE0).w,a0
-		move.w	($FFFFFFE6).w,d1
-		lsr.w	#1,d1
-		andi.w	#3,d1
-		beq.s	Title_PlayRing
-		tst.b	($FFFFFFF8).w
-		bpl.s	Title_PlayRing
-		moveq	#1,d1
 		move.b	d1,1(a0,d1.w)
 
 Title_PlayRing:
 		move.b	#1,(a0,d1.w)	; activate cheat
-		move.b	#$B5,d0		; play ring sound when code is entered
-		bsr.w	PlaySound_Special
 		bra.s	Title_CountC
 ; ===========================================================================
 
@@ -3332,19 +3322,19 @@ Title_ChkLevSel:
 		beq.w	PlayLevel	; if not, play level
 		btst	#6,($FFFFF604).w ; check if A is pressed
 		beq.w	PlayLevel	; if not, play level
-		moveq	#2,d0
-		bsr.w	PalLoad2	; load level select pallet
-		lea	($FFFFCC00).w,a1
-		moveq	#0,d0
-		move.w	#$DF,d1
+		;moveq	#2,d0
+		;bsr.w	PalLoad2	; load level select pallet
+		;lea	($FFFFCC00).w,a1
+		;moveq	#0,d0
+		;move.w	#$DF,d1
 
 Title_ClrScroll:
-		move.l	d0,(a1)+
-		dbf	d1,Title_ClrScroll ; fill scroll data with 0
+		;move.l	d0,(a1)+
+		;dbf	d1,Title_ClrScroll ; fill scroll data with 0
 
-		move.l	d0,($FFFFF616).w
-		move	#$2700,sr
-		lea	($C00000).l,a6
+		;move.l	d0,($FFFFF616).w
+		;move	#$2700,sr
+		;lea	($C00000).l,a6
 		move.l	#$60000003,($C00004).l
 		move.w	#$3FF,d1
 
@@ -19564,6 +19554,7 @@ Map_obj40:
 ; ---------------------------------------------------------------------------
 
 Obj4F:					; XREF: Obj_Index
+		move.b	#0,($FFFFF600).w ; go to Sega screen
 		rts	
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -35323,11 +35314,11 @@ KillSonic:
 		bset	#7,2(a0)
 		move.w	#$A3,d0		; play normal death sound
 		cmpi.b	#$36,(a2)	; check	if you were killed by spikes
-		bne.s	Kill_Sound
-		move.w	#$A6,d0		; play spikes death sound
+		move.w	#$A3,d0		; play normal death sound
 
 Kill_Sound:
-		jsr	(PlaySound_Special).l
+        moveq    #$FFFFFF86,d0
+        jsr    PlaySample
 
 Kill_NoDeath:
 		moveq	#-1,d0
